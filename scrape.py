@@ -44,10 +44,14 @@ def get_all_tweets(screen_name):
 		#update the id of the oldest tweet less one
 		oldest = alltweets[-1].id - 1
 		
-		print "...%s tweets downloaded so far" % (len(alltweets))
 	
 	#transform the tweepy tweets into a 2D array that will populate the csv	
-	outtweets = [[screen_name, tweet.created_at, tweet.text.encode("utf-8")] for tweet in alltweets]
+
+	outtweets = []
+
+	for tweet in alltweets:
+		if (not tweet.retweeted) and ('RT @' not in tweet.text):
+			outtweets.append([screen_name, tweet.created_at, tweet.text.encode("utf-8")])
 	
 	#write the csv	
 	with open('%s_tweets.csv' % screen_name, 'wb') as f:
