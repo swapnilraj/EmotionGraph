@@ -48,7 +48,9 @@ def get_all_tweets(screen_name):
 		
 	
 	#transform the tweepy tweets into a 2D array that will populate the csv	
-
+	for tweet in tweepy.Cursor(api.search,q="*",count=100,geocode="5.29126,52.132633,150km").items(100):
+		print [tweet.created_at,tweet.user.id, tweet.geo, tweet.text.encode('utf-8')]
+    
 	outtweets = []
 
 	for tweet in alltweets:
