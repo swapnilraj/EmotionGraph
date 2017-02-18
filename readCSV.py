@@ -10,7 +10,7 @@ def listCSVs():
     return csvList
 
 def readfile(name):
-    csv = pandas.read_csv(name, sep=", ") 
+    csv = pandas.read_csv(name, sep="\",\"") 
     return csv
 
 def getSequences(csv, title):
@@ -33,14 +33,31 @@ def selectCSV(csvList):
 def getEmotionList(csv, criteria):
     timeEmotionTuples = []
     for row in range(len(csv.index)):
-        max = 0
+        maxval = 0
         emotion = ""
         for col in criteria:
-            val = lookup([row], [col])[0]
-            if val > max:
+            try:
+                val = float(csv.lookup([row], [col])[0])
+            except ValueError:
+                val = float(csv.lookup([row], [col])[0][0:-1])
+            except TypeError:
+                pass
+            print col, val
+            if val > maxval:
+                print "bigger"
                 emotion = col
-                max = val
+                maxval = val
+        print "Chose " + emotion, maxval
         timeEmotionTuples.append((csv.lookup([row], ["time"])[0], emotion))
     return timeEmotionTuples
 
-print(getEmotionList(readfile(selectCSV(listCSVs())), ["sadness", "fear"]))
+elist = getEmotionList(readfile(selectCSV(listCSVs())), ["joy","disgust","sadness","fear","anger"])
+
+data = ""
+for time, emotion in elist:
+    data += "%s,%s\n" % (time, emotion)
+
+f = open("test.csv", "w")
+f.write(data)
+f.close()
+print data

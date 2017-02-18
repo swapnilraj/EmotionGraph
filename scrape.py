@@ -25,7 +25,7 @@ def get_all_tweets(screen_name):
 	alltweets = []	
 	
 	#make initial request for most recent tweets (200 is the maximum allowed count)
-	new_tweets = api.user_timeline(screen_name = screen_name,count=200)
+	new_tweets = api.user_timeline(screen_name = screen_name,count=2)
 	
 	#save most recent tweets
 	alltweets.extend(new_tweets)
@@ -48,8 +48,8 @@ def get_all_tweets(screen_name):
 		
 	
 	#transform the tweepy tweets into a 2D array that will populate the csv	
-	for tweet in tweepy.Cursor(api.search,q="*",count=100,geocode="5.29126,52.132633,150km").items(100):
-		print [tweet.created_at,tweet.user.id, tweet.geo, tweet.text.encode('utf-8')]
+	# for tweet in tweepy.Cursor(api.search,q="*",count=100,geocode="5.29126,52.132633,150km").items(100):
+	# 	print [tweet.created_at,tweet.user.id, tweet.geo, tweet.text.encode('utf-8')]
     
 	outtweets = []
 
@@ -63,10 +63,29 @@ def get_all_tweets(screen_name):
 		writer.writerow(headers)
 		# writer.writerow(["id","created_at","text"])
 		writer.writerows(outtweets)
-	
-	pass
+
+	return outtweets
+
+
+import json
+from watson_developer_cloud import ToneAnalyzerV3
 
 
 if __name__ == '__main__':
 	#pass in the username of the account you want to download
-	get_all_tweets("raj_swapnil")
+	tweets = get_all_tweets("koush")
+
+	out = open('jsonDumpSwapnilsGuy.txt', 'w')
+	for tweetblock in tweets:
+		tweet = tweetblock[2]
+		out.write(tweet)
+		print tweet
+
+		tone_analyzer = ToneAnalyzerV3(
+			username='91c31290-336f-4443-b0f7-372ef802e513',
+			password='yzLUszcd3pXm',
+			version='2016-05-19 ')
+		out.write(json.dumps(tone_analyzer.tone(text=tweet), indent=2))
+		print "result written"
+
+	out.close()
