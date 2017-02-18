@@ -10,6 +10,8 @@ consumer_secret = "fjU4SLZayBBcYkIJHaFFXpRRH0kxR0uISMnPYOGXjwB66UMWvW"
 access_key = "276380747-eIovsf6m2KP6HuETAURXdebTxiCrcat88gK2ODGq"
 access_secret = "NNwbuBsWOipEhKl1Kf7M5FglVd89axMGbIaNvzPme3Phk"
 
+headers = (["handle","time","tweet","joy","fear","sadness","disgust","anger","openness","conscientiousness","extraversion","agreeableness","neuroticism","analytical","confidence","tentative"])
+
 
 def get_all_tweets(screen_name):
 	#Twitter only allows access to a users most recent 3240 tweets with this method
@@ -54,8 +56,9 @@ def get_all_tweets(screen_name):
 			outtweets.append([screen_name, tweet.created_at, tweet.text.encode("utf-8")])
 	
 	#write the csv	
-	with open('%s_tweets.csv' % screen_name, 'wb') as f:
+	with open('%s_tweets.csv' % screen_name, 'awb') as f:
 		writer = csv.writer(f)
+		writer.writerow(headers)
 		# writer.writerow(["id","created_at","text"])
 		writer.writerows(outtweets)
 	
