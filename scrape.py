@@ -10,7 +10,7 @@ consumer_secret = "fjU4SLZayBBcYkIJHaFFXpRRH0kxR0uISMnPYOGXjwB66UMWvW"
 access_key = "276380747-eIovsf6m2KP6HuETAURXdebTxiCrcat88gK2ODGq"
 access_secret = "NNwbuBsWOipEhKl1Kf7M5FglVd89axMGbIaNvzPme3Phk"
 
-headers = (["handle","time","tweet","joy","fear","sadness","disgust","anger","openness","conscientiousness","extraversion","agreeableness","neuroticism","analytical","confidence","tentative"])
+headers = (["handle","time","tweet"])
 
 
 def get_all_tweets(screen_name):
