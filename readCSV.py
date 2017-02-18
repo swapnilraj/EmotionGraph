@@ -10,11 +10,15 @@ def listCSVs():
     return csvList
 
 def readfile(name):
-    csv = pandas.read_csv(name) 
+    csv = pandas.read_csv(name, sep=", ") 
     return csv
 
-def getArray(csv, title):
-    pass
+def getSequences(csv, title):
+    sequence = csv.filter(items=title)
+    if not sequence.empty:
+        return sequence
+    else:
+        print("No such title '%s'." % title)
 
 def selectCSV(csvList):
     while True:
@@ -26,4 +30,17 @@ def selectCSV(csvList):
         else:
             print("Invlaid selection.")
 
-print(readfile(selectCSV(listCSVs())).time)
+def getEmotionList(csv, criteria):
+    timeEmotionTuples = []
+    for row in range(len(csv.index)):
+        max = 0
+        emotion = ""
+        for col in criteria:
+            val = lookup([row], [col])[0]
+            if val > max:
+                emotion = col
+                max = val
+        timeEmotionTuples.append((csv.lookup([row], ["time"])[0], emotion))
+    return timeEmotionTuples
+
+print(getEmotionList(readfile(selectCSV(listCSVs())), ["sadness", "fear"]))
