@@ -9,6 +9,8 @@ file<-read.csv("realDonaldTrump_tweets.csv",sep = ",")
 
 #View(file)
 
+file<-file[1:100, ]
+
 #set api parameters
 api_feature = "TextGetEmotion"
 alchemy_url = "https://watson-api-explorer.mybluemix.net/alchemy-api/calls/text/"
@@ -29,14 +31,29 @@ for(i in 1:nrow(file))
   fear<- a$docEmotions$fear
   joy<- a$docEmotions$joy
   sad<- a$docEmotions$sadness
-  es<-rbind(es,c(joy,fear,sad,dis,ang))
+  #es<-rbind(es,c(joy,fear,sad,dis,ang))
+  if(is.null(joy))
+  {
+    es<-rbind(es,c("0","0","0","0","0"))
+  }
+  else
+  {
+    es<-rbind(es,c(joy,fear,sad,dis,ang))
+  }
+  Sys.sleep(4)
 }
+
+
 
 #nrow(file)
 es<- es[-(1:6),]
+
+
 names(es) <- c("joy","fear","sadness","disgust","anger")
-#View(es)
+View(es)
 output<-cbind(file,es)
 
-write.csv(output,"EmotionalData.csv")
+View(output)
+
+write.csv(output,"EmotionalData.csv",row.names = FALSE)
 
