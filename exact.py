@@ -88,7 +88,7 @@ def generateFrequencies(timeline, divisions):
 		for entry in timeline:
 			# if entry[0] < (endtime - samplesize * (i)) - sampledistance:
 			# 	break
-			if endtime - (samplesize * i) <= entry[0]:
+			if endtime - (samplesize * i) >= entry[0]:
 				if entry[1] == "Neutral":
 					pass
 				elif entry[1] == "Joy":

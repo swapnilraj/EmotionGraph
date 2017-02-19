@@ -45,4 +45,4 @@ def scrapeUser(name):
         except KeyError: 
             pass  
 
-    scrape.analyzer(facebookMessages) 
+    scrape.analyzer(facebookMessages, name + " FaceBook") 
