@@ -7,7 +7,10 @@ import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 from termcolor import colored
+<<<<<<< HEAD
 
+=======
+>>>>>>> ff8614cfda98690dfe932a1f36b96e6e6683c543
 
 sns.set(style='ticks', palette='Set2')
 
@@ -127,45 +130,39 @@ def generateFrequencies(timeline, divisions):
 		results.append((endtime - (samplesize * i), ratio))
 	return results
 
+def analyzer(messages):
+		#pass in the username of the account you want to download
+		results = []
 
-if __name__ == '__main__':
-	#pass in the username of the account you want to download
-	tweets = get_all_tweets("realdonaldtrump")
-	results = []
+		out = open('jsonDumpSwapnilsGuy.txt', 'w')
+		plt.ion()
+		plt.show()
+		for message in messages:
+			tweet = message[2]
+			try:
+				out.write(tweet)
+			except UnicodeEncodeError:
+				pass	
+			print tweet
 
-	out = open('jsonDumpSwapnilsGuy.txt', 'w')
-	plt.ion()
-	plt.show()
-	for tweetblock in tweets:
-		tweet = tweetblock[2]
-		out.write(tweet)
+			tone_analyzer = ToneAnalyzerV3(
+				username='91c31290-336f-4443-b0f7-372ef802e513',
+				password='yzLUszcd3pXm',
+				version='2016-05-19 ')
+			tone = tone_analyzer.tone(text=tweet)
+			tone_types = tone["document_tone"]["tone_categories"][0]["tones"]
+			results.append(((message[1] - datetime.datetime(1970,1,1)).total_seconds(), findEmotion(tone_types)))
+			final = generateFrequencies(results, 20)
+			print final
+			finalresult = []
+			for item in final:
+				finalresult.append(item[1])
+			plt.plot(finalresult)
+			plt.pause(0.001)
+			plt.draw()
+			plt.clf()
+		
 
-		tone_analyzer = ToneAnalyzerV3(
-			username='91c31290-336f-4443-b0f7-372ef802e513',
-			password='yzLUszcd3pXm',
-			version='2016-05-19 ')
-		tone = tone_analyzer.tone(text=tweet)
-		tone_types = tone["document_tone"]["tone_categories"][0]["tones"]
-		emotion = findEmotion(tone_types)
+		out.close()
 
-		if emotion == "Joy":
-			print colored(tweet, "green")
-		elif emotion == "Neutral":
-			print colored(tweet, "grey")
-		else:
-			print colored(tweet, "red")
-
-
-		results.append(((tweetblock[1] - datetime.datetime(1970,1,1)).total_seconds(), emotion))
-		final = generateFrequencies(results, 20)
-
-		finalresult = []
-		for item in final:
-			finalresult.append(item[1])
-		plt.plot(finalresult)
-		plt.pause(.001)
-		plt.draw()
-		plt.clf()
-	
-
-	out.close()
+# analyzer(get_all_tweets("koush"))	
