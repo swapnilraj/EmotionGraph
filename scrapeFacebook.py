@@ -1,4 +1,7 @@
 import requests
+import json
+import scrape
+import datetime
 
 url = "https://graph.facebook.com/v2.5/153080620724/feed"
 
@@ -9,5 +12,28 @@ headers = {
     }
 
 response = requests.request("GET", url, headers=headers, params=querystring)
+jn = json.loads(response.text)
+messages = jn["data"]
 
-print(response.text)
+# print messages[0]["message"]
+
+facebookMessages = []
+
+for message in messages:
+    try:
+        # print message['message']
+        time =  str(message['created_time'])
+        time = time.replace("T", " ")
+        time = time.replace("+0000", "")
+        print time
+        year = int(time.split(' ')[0].split('-')[0])
+        month = int(time.split(' ')[0].split('-')[1])
+        day = int(time.split(' ')[0].split('-')[2])
+        hour  = int(time.split(' ')[1].split(':')[0])
+        minute = int(time.split(' ')[1].split(':')[1])
+        second = int(time.split(' ')[1].split(':')[2])
+        facebookMessages.append([' ', datetime.datetime(year, month, day, hour, minute, second), message['message']])
+    except KeyError: 
+        pass  
+
+scrape.analyzer(facebookMessages) 

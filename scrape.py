@@ -127,31 +127,35 @@ def generateFrequencies(timeline, divisions):
 	return results
 
 
-if __name__ == '__main__':
-	#pass in the username of the account you want to download
-	tweets = get_all_tweets("scarlehhhhh")
-	results = []
+def analyzer(messages):
+		#pass in the username of the account you want to download
+		results = []
 
-	out = open('jsonDumpSwapnilsGuy.txt', 'w')
-	for tweetblock in tweets:
-		tweet = tweetblock[2]
-		out.write(tweet)
-		print tweet
+		out = open('jsonDumpSwapnilsGuy.txt', 'w')
+		for message in messages:
+			tweet = message[2]
+			try:
+				out.write(tweet)
+			except UnicodeEncodeError:
+				pass	
+			print tweet
 
-		tone_analyzer = ToneAnalyzerV3(
-			username='91c31290-336f-4443-b0f7-372ef802e513',
-			password='yzLUszcd3pXm',
-			version='2016-05-19 ')
-		tone = tone_analyzer.tone(text=tweet)
-		tone_types = tone["document_tone"]["tone_categories"][0]["tones"]
-		results.append(((tweetblock[1] - datetime.datetime(1970,1,1)).total_seconds(), findEmotion(tone_types)))
-	final = generateFrequencies(results, 20)
-	print final
-	finalresult = []
-	for item in final:
-		finalresult.append(item[1])
-	plt.plot(finalresult)
-	plt.show()
-	
+			tone_analyzer = ToneAnalyzerV3(
+				username='91c31290-336f-4443-b0f7-372ef802e513',
+				password='yzLUszcd3pXm',
+				version='2016-05-19 ')
+			tone = tone_analyzer.tone(text=tweet)
+			tone_types = tone["document_tone"]["tone_categories"][0]["tones"]
+			results.append(((message[1] - datetime.datetime(1970,1,1)).total_seconds(), findEmotion(tone_types)))
+		final = generateFrequencies(results, 20)
+		print final
+		finalresult = []
+		for item in final:
+			finalresult.append(item[1])
+		plt.plot(finalresult)
+		plt.show()
+		
 
-	out.close()
+		out.close()
+
+# analyzer(get_all_tweets("koush"))	
