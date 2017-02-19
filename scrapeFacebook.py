@@ -2,10 +2,18 @@ import requests
 import json
 import scrape
 import datetime
+import fbid
 
-url = "https://graph.facebook.com/v2.5/153080620724/feed"
 
-querystring = {"access_token":"EAACEdEose0cBAOB7cevFUjBDeYEWqN6KaYzuhm7IooMKgAXOD92lYRMFZB0AObZCLemQcQfwDcIrzBxh64joZAgyyghj4SZCEYnKlpdz494PyRFWx59nl54pDW0W2X5zvMxbbNv8gRAxHJSLcVmNUAJr03cZBEPW8zZBVhSZB7JKLZA6AyrzEDcWhQK8NxXezwoZD","debug":"all","format":"json","method":"get","pretty":"0","suppress_http_code":"1"}
+user_id = fbid.search_username("swapnilraj5")
+
+url = "https://graph.facebook.com/v2.5/%s/feed" % (user_id)
+
+print url
+
+user_access = "EAACEdEose0cBABJIbGAJyCYYcLX91vAjTVKaah0IZANHrSCvkwRhfAhwDKuTCl9ZCcJh6uLiN2b4NsQt2L0dUMj0FLClEcirZADVybMjzwipWI6BORtd1ZAkZA1lwrocLywP5sWYuWrJsVwtZAuIRi4xOATFL5h0GMVZA0O1KZCeLT5vRyJ0ZADxYfmB1MN2hotYZD"
+
+querystring = {"access_token":user_access,"debug":"all","format":"json","method":"get","pretty":"0","suppress_http_code":"1"}
 
 headers = {
     'cacheg': "5aeb7a94-d25b-2134-2aaf-31ac7d560055"
@@ -13,6 +21,7 @@ headers = {
 
 response = requests.request("GET", url, headers=headers, params=querystring)
 jn = json.loads(response.text)
+print jn
 messages = jn["data"]
 
 # print messages[0]["message"]

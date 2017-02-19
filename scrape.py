@@ -6,7 +6,7 @@ import csv
 import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
-
+from termcolor import colored
 
 sns.set(style='ticks', palette='Set2')
 
@@ -132,6 +132,8 @@ def analyzer(messages):
 		results = []
 
 		out = open('jsonDumpSwapnilsGuy.txt', 'w')
+		plt.ion()
+		plt.show()
 		for message in messages:
 			tweet = message[2]
 			try:
@@ -147,13 +149,15 @@ def analyzer(messages):
 			tone = tone_analyzer.tone(text=tweet)
 			tone_types = tone["document_tone"]["tone_categories"][0]["tones"]
 			results.append(((message[1] - datetime.datetime(1970,1,1)).total_seconds(), findEmotion(tone_types)))
-		final = generateFrequencies(results, 20)
-		print final
-		finalresult = []
-		for item in final:
-			finalresult.append(item[1])
-		plt.plot(finalresult)
-		plt.show()
+			final = generateFrequencies(results, 20)
+			print final
+			finalresult = []
+			for item in final:
+				finalresult.append(item[1])
+			plt.plot(finalresult)
+			plt.pause(0.001)
+			plt.draw()
+			plt.clf()
 		
 
 		out.close()
