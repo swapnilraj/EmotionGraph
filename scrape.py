@@ -134,7 +134,7 @@ def analyzer(messages):
 				out.write(tweet)
 			except UnicodeEncodeError:
 				pass	
-			print tweet
+			
 
 			tone_analyzer = ToneAnalyzerV3(
 				username='91c31290-336f-4443-b0f7-372ef802e513',
@@ -142,9 +142,20 @@ def analyzer(messages):
 				version='2016-05-19 ')
 			tone = tone_analyzer.tone(text=tweet)
 			tone_types = tone["document_tone"]["tone_categories"][0]["tones"]
-			results.append(((message[1] - datetime.datetime(1970,1,1)).total_seconds(), findEmotion(tone_types)))
+
+
+
+			emotion = findEmotion(tone_types)
+			results.append(((message[1] - datetime.datetime(1970,1,1)).total_seconds(), emotion))
+
+			if emotion == "Joy":
+				print colored(tweet, "green")
+			elif emotion == "Neutral":
+				print colored(tweet, "white")
+			else:
+				print colored(tweet, "red")
+
 			final = generateFrequencies(results, 20)
-			print final
 			finalresult = []
 			for item in final:
 				finalresult.append(item[1])
@@ -157,3 +168,10 @@ def analyzer(messages):
 		out.close()
 
 # analyzer(get_all_tweets("koush"))	
+def plot(input):
+	plt.plot(finalresult)
+	plt.pause(0.001)
+	plt.draw()
+
+def clear():
+	plt.clf()
