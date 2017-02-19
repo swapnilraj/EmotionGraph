@@ -5,7 +5,7 @@ import datetime
 import fbid
 
 
-user_id = fbid.search_username("swapnilraj5")
+user_id = fbid.search_username("DonaldTrump")
 
 url = "https://graph.facebook.com/v2.5/%s/feed" % (user_id)
 
