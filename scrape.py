@@ -7,10 +7,6 @@ import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 from termcolor import colored
-<<<<<<< HEAD
-
-=======
->>>>>>> ff8614cfda98690dfe932a1f36b96e6e6683c543
 
 sns.set(style='ticks', palette='Set2')
 
@@ -57,11 +53,6 @@ def get_all_tweets(screen_name):
 		#update the id of the oldest tweet less one
 		oldest = alltweets[-1].id - 1
 		
-	
-	#transform the tweepy tweets into a 2D array that will populate the csv	
-	# for tweet in tweepy.Cursor(api.search,q="*",count=100,geocode="5.29126,52.132633,150km").items(100):
-	# 	print [tweet.created_at,tweet.user.id, tweet.geo, tweet.text.encode('utf-8')]
-    
 	outtweets = []
 
 	for tweet in alltweets:
