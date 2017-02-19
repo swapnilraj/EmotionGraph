@@ -4,14 +4,14 @@ import scrape
 import datetime
 import fbid
 
-def scrapeUser(user)
-    user_id = fbid.search_username("HarryStylesOfficial")
+def scrapeUser(name):
+    user_id = fbid.search_username(name)
 
     url = "https://graph.facebook.com/v2.5/%s/feed" % (user_id)
 
     print url
 
-    user_access = "EAACEdEose0cBABJIbGAJyCYYcLX91vAjTVKaah0IZANHrSCvkwRhfAhwDKuTCl9ZCcJh6uLiN2b4NsQt2L0dUMj0FLClEcirZADVybMjzwipWI6BORtd1ZAkZA1lwrocLywP5sWYuWrJsVwtZAuIRi4xOATFL5h0GMVZA0O1KZCeLT5vRyJ0ZADxYfmB1MN2hotYZD"
+    user_access = "EAACEdEose0cBABQZBzudnkG7bYo0d9FbjwKZC7dYmYt5ziUpr0JgubDTQqB4Tm0bQ2ZBoJTYzAwYCeEy8yNxnnL2u7tJpiJGyzJjD9xNA99lVOXNLi4M3WPCghmlTKthTamew41qgAMX5EsZCOdpGBlKcgsiEtkJLasLOBc51kZBzgDzboDpYWuqQr2JkGZBMZD"
 
     querystring = {"access_token":user_access,"debug":"all","format":"json","method":"get","pretty":"0","suppress_http_code":"1"}
 

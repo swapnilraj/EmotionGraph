@@ -125,16 +125,10 @@ def analyzer(messages):
 		#pass in the username of the account you want to download
 		results = []
 
-		out = open('jsonDumpSwapnilsGuy.txt', 'w')
 		plt.ion()
 		plt.show()
 		for message in messages:
 			tweet = message[2]
-			try:
-				out.write(tweet)
-			except UnicodeEncodeError:
-				pass	
-			
 
 			tone_analyzer = ToneAnalyzerV3(
 				username='91c31290-336f-4443-b0f7-372ef802e513',
@@ -164,9 +158,6 @@ def analyzer(messages):
 			plt.draw()
 			plt.clf()
 		
-
-		out.close()
-
 # analyzer(get_all_tweets("koush"))	
 def plot(input):
 	plt.plot(finalresult)
