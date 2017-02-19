@@ -3,6 +3,13 @@
 
 import tweepy #https://github.com/tweepy/tweepy
 import csv
+import datetime
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+sns.set(style='ticks', palette='Set2')
+
 
 #Twitter API credentials
 consumer_key = "F3HRVhBsGeTXEmaI2pr19AvnO"
@@ -25,7 +32,7 @@ def get_all_tweets(screen_name):
 	alltweets = []	
 	
 	#make initial request for most recent tweets (200 is the maximum allowed count)
-	new_tweets = api.user_timeline(screen_name = screen_name,count=2)
+	new_tweets = api.user_timeline(screen_name = screen_name,count=200)
 	
 	#save most recent tweets
 	alltweets.extend(new_tweets)
@@ -34,7 +41,7 @@ def get_all_tweets(screen_name):
 	oldest = alltweets[-1].id - 1
 	
 	#keep grabbing tweets until there are no tweets left to grab
-	while len(new_tweets) > 0:
+	while len(alltweets) < 10:
 		print "getting tweets before %s" % (oldest)
 		
 		#all subsiquent requests use the max_id param to prevent duplicates
@@ -67,13 +74,63 @@ def get_all_tweets(screen_name):
 	return outtweets
 
 
+def findEmotion(tonearray):
+	maximum = 0
+	name = ""
+	for emotion in tonearray:
+		if emotion['score'] > maximum:
+			maximum = emotion['score']
+			name = emotion["tone_name"]
+
+	if name == "":
+		return "Neutral"
+	else:
+		return name
+
+
 import json
 from watson_developer_cloud import ToneAnalyzerV3
+
+def generateFrequencies(timeline, divisions):
+	endtime = timeline[0][0]
+	starttime = timeline[len(timeline) - 1][0]
+	diff = endtime - starttime
+	sampledistance = diff / divisions
+	samplesize = 2 * sampledistance
+
+	results = []
+	for i in range(divisions):
+		ngood = 0
+		nbad = 0
+		ratio = 0.0
+		previous = 0.5
+		for entry in timeline:
+			if entry[0] < endtime - (samplesize * (i) - sampledistance):
+				break
+			elif endtime - (samplesize * i) <= entry[0]:
+				if entry[1] == "Neutral":
+					pass
+				elif entry[1] == "Joy":
+					ngood += 1
+				else:
+					nbad += 1
+		if ngood > 0 and nbad > 0:
+			ratio = (ngood) / float(nbad + ngood)
+		elif ngood > 0:
+			ratio = 1
+		elif nbad > 0:
+			ratio = 0
+		else:
+			ratio = previous
+		previous = ratio
+		results.append((endtime - (samplesize * i), ratio))
+	return results
 
 
 if __name__ == '__main__':
 	#pass in the username of the account you want to download
-	tweets = get_all_tweets("koush")
+	tweets = get_all_tweets("scarlehhhhh")
+	results = []
 
 	out = open('jsonDumpSwapnilsGuy.txt', 'w')
 	for tweetblock in tweets:
@@ -85,7 +142,16 @@ if __name__ == '__main__':
 			username='91c31290-336f-4443-b0f7-372ef802e513',
 			password='yzLUszcd3pXm',
 			version='2016-05-19 ')
-		out.write(json.dumps(tone_analyzer.tone(text=tweet), indent=2))
-		print "result written"
+		tone = tone_analyzer.tone(text=tweet)
+		tone_types = tone["document_tone"]["tone_categories"][0]["tones"]
+		results.append(((tweetblock[1] - datetime.datetime(1970,1,1)).total_seconds(), findEmotion(tone_types)))
+	final = generateFrequencies(results, 20)
+	print final
+	finalresult = []
+	for item in final:
+		finalresult.append(item[1])
+	plt.plot(finalresult)
+	plt.show()
+	
 
 	out.close()
