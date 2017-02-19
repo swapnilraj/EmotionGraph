@@ -6,6 +6,7 @@ import csv
 import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
+from termcolor import colored
 
 
 sns.set(style='ticks', palette='Set2')
@@ -82,7 +83,7 @@ def findEmotion(tonearray):
 			maximum = emotion['score']
 			name = emotion["tone_name"]
 
-	if name == "":
+	if name == "" or maximum < 0.5:
 		return "Neutral"
 	else:
 		return name
@@ -129,14 +130,15 @@ def generateFrequencies(timeline, divisions):
 
 if __name__ == '__main__':
 	#pass in the username of the account you want to download
-	tweets = get_all_tweets("scarlehhhhh")
+	tweets = get_all_tweets("realdonaldtrump")
 	results = []
 
 	out = open('jsonDumpSwapnilsGuy.txt', 'w')
+	plt.ion()
+	plt.show()
 	for tweetblock in tweets:
 		tweet = tweetblock[2]
 		out.write(tweet)
-		print tweet
 
 		tone_analyzer = ToneAnalyzerV3(
 			username='91c31290-336f-4443-b0f7-372ef802e513',
@@ -144,14 +146,26 @@ if __name__ == '__main__':
 			version='2016-05-19 ')
 		tone = tone_analyzer.tone(text=tweet)
 		tone_types = tone["document_tone"]["tone_categories"][0]["tones"]
-		results.append(((tweetblock[1] - datetime.datetime(1970,1,1)).total_seconds(), findEmotion(tone_types)))
-	final = generateFrequencies(results, 20)
-	print final
-	finalresult = []
-	for item in final:
-		finalresult.append(item[1])
-	plt.plot(finalresult)
-	plt.show()
+		emotion = findEmotion(tone_types)
+
+		if emotion == "Joy":
+			print colored(tweet, "green")
+		elif emotion == "Neutral":
+			print colored(tweet, "grey")
+		else:
+			print colored(tweet, "red")
+
+
+		results.append(((tweetblock[1] - datetime.datetime(1970,1,1)).total_seconds(), emotion))
+		final = generateFrequencies(results, 20)
+
+		finalresult = []
+		for item in final:
+			finalresult.append(item[1])
+		plt.plot(finalresult)
+		plt.pause(.001)
+		plt.draw()
+		plt.clf()
 	
 
 	out.close()
